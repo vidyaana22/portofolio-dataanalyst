@@ -10,4 +10,4 @@ My CV in [Vidya's CV.pdf](https://drive.google.com/file/d/14Me1Qwb_12MrmhnfiNq0X
 In this section I will provide a list of project data that I have worked on during college using various analysis methods.
 
 ### Analisis Regresi Linier Berganda Faktor Yang Mempengaruhi Nilai UTS Mata Kuliah Pengantar Statistika Mahasiswa Teknologi Sains Data Angkatan 2021
-**Code:** 
+**Code:** [Text Mining.ipynb](https://github.com/vidyaana22/portofolio-dataanalyst/blob/main/Text%20Mining.ipynb)
