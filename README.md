@@ -6,7 +6,7 @@ Hi, I'm Vidya! I'm a passionate and aspiring Data Science student currently purs
 
 My CV in [Vidya's CV.pdf](https://drive.google.com/file/d/14Me1Qwb_12MrmhnfiNq0X0C6ULpnr1N1/view?usp=sharing)
 
-## Portofolio Project
+## Portfolio Project
 In this section I will provide a list of project data that I have worked on during college using various analysis methods.
 
 ### Analisis Genre Musik dan Faktor Keputusan Berlangganan Premium Aplikasi Musik pada Mahasiswa TSD
