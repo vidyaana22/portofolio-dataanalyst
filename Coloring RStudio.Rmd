@@ -1,0 +1,113 @@
+---
+title: "PRAKTIKUM 6 VISUALISASI DATA MENGGUNAKAN RSTUDIO DENGAN PEDOMAN PENGGUNAAN WARNA"
+author: "Vidyana Yulianingrm"
+date: "2022-09-28"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Link Dataset
+
+[Dataset Laptop Price](https://www.kaggle.com/datasets/muhammetvarl/laptop-price)
+
+# Visualisasi Data
+
+## 1. Bar Chart
+
+```{r}
+#Bar Chart
+
+setwd("E:/BISMILLAH VIDYA SEMANGAT/MATERI KULIAH SEMESTER 3/EKSPLORASI DAN VISUALISASI DATA/LAPORAN PRAKTIKUM/Dataset Praktikum 4")
+
+library(readr)
+Data = read.csv("laptop_pricenew.csv")
+attach(Data)
+
+library(mosaicData)
+library(RColorBrewer)
+display.brewer.all()
+
+count_com <- table(Data$Company)
+
+plot <- barplot(count_com,
+        main = "Laptop Company",
+        ylab = "Frequency",
+        las = 2,
+        col = brewer.pal(n = 12, name = "Paired"))
+```
+
+-   **Penjelasan Visual :** Dengan menggunakan barplot, dapat dilihat bahwa perusahaan laptop Dell memiliki frekuensi terbanyak jika dibandingkan dengan perusahaan laptop lainnya, sebaran datanya pun berada diatas perusahaan laptop lainnya, yang disusul oleh tipe laptop HP.
+
+-   **Penjelasan Code :** disini kita menggunakan function bawaan dari r itu sendiri yaitu *barplot()*, dimana function ini kita berikan beberapa parameter yang mana parameter wajibnya yaitu x dan y dari dataset dimana x disini merupakan perusahaan laptop, dan y merupakan frekuensi atau banyaknya laptop dari perusahaan tersebut., yang mana untuk mendapatkan frekuensi ini kita membuat data frame baru yang berisi nama perusahaan laptop dengan frekuensinya menggunakan function table(). Ada juga parameter lain seperti dataset, *main* untuk judul, dan warna dari barplot itu. Dimana dalam pewarnaan ini kami memanfaatkan packages RColorBrewer. Dalam packages tersebut berisi beberapa palet warna yang dapat digunakan. Untuk Barplot tersebut kami menggunakan palet dengan kode "Paired". Adapun caranya yaitu terlebih dahulu import packages kemudian panggil dengan menuliskan brewel.pal() dengan mengisi parameter di dalamnya yaitu n dan nama palet. Namun karena palet Paired hanya memiliki 12 warna, sedangkan barplot yang kami buat memiliki 14 batang, maka 2 warna batang terakhir memiliki warna yang sama dengan 2 batang awal.
+
+## 2. Pie Chart
+
+```{r}
+#Pie Chart
+
+count_type <- table(Data$TypeName)
+
+pie(count_type,
+    main = "Type Name of Laptop",
+    col = brewer.pal(n = 6, name = "Dark2"))
+
+```
+
+-   **Penjelasan Visual :** Dalam memvisualisasikan variabel "type name" kami menggunakan plot jenis Pie Chart, dimana dengan jenis ini dapat terlihat secara jelas frekuensi antar jenis dalam 1 variabel. Sehingga sebaran datanya dapat terlihat dengan jelas. Dapat terlihat bahwa dalam dataset tersebut type name of laptop yang paling banyak adalah type "Notebook".
+
+-   **Penjelasan Code :** Dideklarasikan count_type sebagai jumlah dari masing-masing jenis dari type of laptop. Kemudian kami menuliskan parameter yang sudah tersedia yaitu count_type, judul plot, dan warna ke dalam function pie(). Untuk warna sendiri kami juga menggunakan packages RColorBrewer. Kami menggunakan palet dalam packages dengan kode "Dark2". Data kami hanya memiliki 6 type laptop, sedangkan palet Dark2 memiliki 8 warna, sehingga kami hanya menuliskan n sebanyak data kami yaitu 6.
+
+## 3. Scatter Plot
+
+```{r}
+#Scatter plot
+library(wesanderson)
+
+ram = Data$Ramm
+price.euros = Data$Price_euros
+plot(ram, price.euros, xlab = "Ram (GB)",
+     ylab = "Price (Euros)",
+     col = wes_palette(n = 4, name = "Moonrise1"))
+```
+
+-   **Penjelasan Visual :** Dalam melihat persebaran keterkaitan antara variabel harga dalam euro (price_euros) dengan besar RAM, kami memvisualisasikan dengan menggunakan scatter plot. Hal ini dikarenakan agar dapat terlihat secara jelas persebaran datanya. Dapat dilihat dalam beberapa sampel bahwa semakin tinggi RAM (GB) maka semakin tinggi harganya.
+
+-   **Penjelasan Code :** Dengan menggunakan fungsi read.csv untuk membaca dataset yang telah kita simpan. Kemudian terdapat fungsi attach() untuk memasukkan data. Selanjutnya dalam membuat scatter plot digunakan fungsi plot() dengan memasukkan variabelnya. Dalam fungsi tersebut kami juga menambahkan warna untuk setiap titik data. Dalam hal ini kami memanfaatkan packages wesanderson dan memilih palet dengan kode "Moonrise1". Untuk dapat menggunakannya, kita perlu mengimport packages terlebih dahulu dan kemudian memanggil fungsinya yaitu wes_palette() dan memasukkan n (jumlah warna dalam palet yang dibutuhkan) serta nama palet. Dikarenakan palet "Moonrise1" hanya memiliki 4 warna, maka kami menuliskan 4 untuk menggunakan keseluruhan warna.
+
+## 4. Box Plot
+
+```{r}
+setwd("E:/BISMILLAH VIDYA SEMANGAT/MATERI KULIAH SEMESTER 3/EKSPLORASI DAN VISUALISASI DATA/LAPORAN PRAKTIKUM/Dataset Praktikum 4")
+
+data = read.table("laptop_price2.csv", sep = ',', header = T)
+
+boxplot(data$Price_euros~data$TypeName,
+        data = data,
+        main = "Perbandingan harga berdasarkan jenis laptop",
+        xlab = "Jenis Laptop",
+        ylab = "Kisaran Harga (Euros)",
+        col = wes_palette(n = 4, name = "Royal1"))
+```
+
+-   **Penjelasan Visual :** Dengan menggunakan boxplot, berdasarkan 4 tipe laptop di dataset, bisa dilihat dimana *ultrabook* memiliki median terbesar jika dibandingkan dengan tipe laptop lainya, sebaran datanya pun berada diatas tipe-tipe lainya, yang disusul oleh tipe laptop *gaming*, dimana tipe laptop gaming juga sepertinya memiliki outlier di wilayah 2500 euros.
+
+-   **Penjelasan Code :** disini kita menggunakan function bawaan dari r itu sendiri yaitu *boxplot()*, dimana function ini kita berikan beberapa parameter yang mana parameter wajibnya yaitu x dan y dari dataset dimana x disini merupakan jenis laptop, dan y merupaan sebaran harga dari laptop tersebut. Ada juga parameter lain seperti dataset, *main* untuk judul, *xlab* untuk label x, *ylab* untuk label y, dan terakhir warna dari boxplot itu. Dimana untuk pewarnaan kami kembali menggunakan packages wesanderson dan memilih palet dengan kode "Royal1". Karena palet tersebut hanya memiliki 4 warna dan kami juga memiliki 4 boxplot, maka kami menggunakan keseluruhan warna yang tersedia dalam palet agar bocplot kami memiliki warna yang berbeda.
+
+## 5. Cleveland Dot Charts
+
+```{r}
+
+grps <- as.factor(data$Company)
+dotchart(data$Price_euros,
+         groups = grps,
+         col = brewer.pal(n = 11, name = "RdYlGn"))
+```
+
+-   **Penjelasan Visual :** Dengan menggunakan *Cleveland Dot Charts*, dimana kita disini melihat bagaimana sebaran data dari suatu brand/company dan harga. Bisa dilihat bahwa *Apple* menududuki peringkat teratas dalam harga laptop dimana kisaran \>2500 euros, disusul oleh MSI, bisa dilihat juga *Hp*, *Microsoft*, *acer* , *asus* dan *lenovo* memiliki rentan harga yang banyak terkumpul pada 500 euros, sedangkan *dell* memiliki rentan harga yang banyak berada pada hampir 1000 euros.
+
+-   **Penjelasan Code :** Dengan menggunakan function dotchart() dari r, kita bisa membuat suatu *Cleveland Dot Charts*, dimana disini kita memberikan 2 parameter yang pertama sebagai parameter untuk nilai x, dan faktor yang sebelumnya kita deklarasikan menggunkan *as.factor()* dengan mengambil kolom data company sebagai group atau patokan sebaran data nantinya untuk x yang kita simpan dalam variabel *grps*. Dalam fungsi tersebut kami juga menambahkan warna untuk setiap titik data. Dalam hal ini kami memanfaatkan packages RColorBrewer dan memilih palet dengan kode "RdYlGn". Namun dikarenakan palet "RdYlGn" hanya memiliki 11 warna, maka kami menuliskan 11 untuk menggunakan keseluruhan warna agar titik data yang divisualisasikan memiliki warna yang berbeda meskipun terdapat juga beberapa yang sama karena keterbatasan warna dalam palet.

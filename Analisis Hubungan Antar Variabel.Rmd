@@ -1,0 +1,181 @@
+---
+title: "Tugas Kelompok Minggu 8"
+output:
+  pdf_document: default
+  html_document: default
+date: "2022-10-24"
+---
+
+# Analisis Hubungan Antar Variabel
+
+## Informasi Data
+
+Data yang digunakan pada analisis ini berjudul **Car Price Prediction**, yang mana data ini berisi beberapa data spesifikasi mobil sebagai variabel prediktor (x) beserta harganya sebagai variabel respons (y). Data tersebut dapat diakses melalui situs Kaggle <https://www.kaggle.com/code/goyalshalini93/car-price-prediction-linear-regression-rfe/data>.
+
+Pada analisis ini, kami mencoba untuk memprediksi harga mobil berdasarkan beberapa data ukuran anatomi/bagian dari mobil. Oleh karenanya, atribut yang digunakan pada analisis ini hanya beberapa variabel di bawah ini:\
+wheelbase, carlength, carwidth, carheight, curbweight, enginesize, boreratio, stroke, compressionratio, horsepower, peakrpm, citympg, highwaympg.\
+13 atribut prediktor tersebut akan diregresikan secara linear untuk memprediksi variabel respons berupa harga dari mobil tersebut.
+
+Adapun deskripsi singkat terkait variabel yang digunakan adalah sebagai berikut:
+
+1.  wheelbase =\>Jarak antara titik pusat roda bagian depan dengan roda bagian belakang
+2.  carlength =\> Panjang mobil
+3.  carwidth =\> Lebar mobil
+4.  carheight =\> Tinggi mobil
+5.  curbweight =\> Berat bershih (netto) mobil (tanpa penumpang maupun barang)
+6.  enginesize =\> Ukuran/kapasitas mesin mobil (volume silinder mesin)
+7.  boreratio =\> Rasio antara diameter silinder mesin dengan panjang piston
+8.  stroke =\> Waktu yang dibutuhkan piston untuk bergerak naik-turun
+9.  compressionratio =\> Rasio antara volume min dan maks silinder ketika piston bergerak naik turun
+10. horsepower =\> Unit pengukuran kekuatan mesin
+11. peakrpm =\>Kecepatan mobil ketika mesin sedang berada dalam puncak efisiensinya
+12. citympg =\> Jarak yang dapat ditempuh mobil tiap galon bahan bakar saat sedang berkendara di kota
+13. highwaympg =\> Mirip citympg, tapi di jalan tol/jalan lebar dimana mobil jarang berhenti-bergerak
+14. price =\> Harga mobil
+
+Seluruh atribut dengan jumlah 14 yang digunakan merupakan atribut bertipe data numerik sehingga tidak perlu melalui tahap *coding* atribut. Dalam dataset tersebut, tidak ditemukan data yang kosong atau hilang. Oleh karena itu, tahap pra-pemrosesan data tidak terlalu sulit dan data bisa langsung dianalisis.
+
+```{r}
+#set current location path
+setwd("E:/BISMILLAH VIDYA SEMANGAT/MATERI KULIAH SEMESTER 3/EKSPLORASI DAN VISUALISASI DATA/LAPORAN PRAKTIKUM")
+
+#import data
+data = read.csv("CarPrice_Assignment.csv", header = TRUE)
+head(data)
+```
+
+## Analisis Data
+
+### Pemodelan Data
+
+```{r message=FALSE, warning=FALSE}
+#linear regression model
+attach(data)
+model=lm(price~wheelbase+carlength+carwidth+carheight+curbweight+enginesize+boreratio+stroke+compressionratio+horsepower+peakrpm+citympg+highwaympg)
+summary(model)
+
+coef(model)
+```
+
+Dalam menganalisis data, kelompok kami menggunakan metode regresi berganda dengan code seperti code chunk di atas. Setelah meregresikan variabel prediktor dengan variabel respon didapatkan hasil multiple R-Square sebesar 0.8508 dan adjusted R-squared sebesar 0.8406. Hal ini berarti bahwa sebesar 85% model tersebut dapat dijelaskan oleh data dan sisanya dijelaskan oleh hal lain salah satunya error.
+
+Adapun model persamaan regresi dari data tersebut adalah :
+
+Y = -47495.74 + 122.617 X1 - 94.675 X2 + 505.572 X3 + 163.180 X4 + 1.885 X5 + 117.346 X6 - 1002.565 X7 - 3034.606 X8 + 298.137 X9 + 30.809 X10 + 2.375 X11 - 320.355 X12 + 202.822 X13
+
+dengan :
+
+Y = price_pred
+
+X1 = wheelbase
+
+X2 = carlength
+
+X3 = carwidth
+
+X4 = carheight
+
+X5 = curbweight
+
+X6 = enginesize
+
+X7 = boreratio
+
+X8 = stroke
+
+X9 = compressionratio
+
+X10 = horsepower
+
+X11 = peakrpm
+
+X12 = citympg
+
+X13 = highwaympg
+
+### Reduksi Dimensi: Stepwise Backward-Elimination
+
+```{r}
+step(model, direction = "backward")
+```
+
+Pada proses backward elimination, setiap tahap variabel independen/predictor diregresikan melalui regresi linear berganda. Kemudian, variabel-variabel yang tidak signifikan akan dihilangkan dari model secara bertahap/berulang hingga seluruh variabel yang bersifat signifikan dalam model regresi. Variabel dikatakan signifikan apabila seluruh variabel memiliki nilai AIC yang lebih kecil dari nilai step AIC. Penghentian iterasi juga dapat dilihat apabila nilai AIC pada beta 0 lebih kecil daripada nilai AIC variabel lain.
+
+Pada backward yang pertama, variabel yang nilainya kurang dari nilai step AIC adalah boreration sampai beta 0 (none). Namun, variabel yang di eliminasi hanyalah 1 yaitu yang nilai AIC nya paling kecil (boreratio). Hal ini terus dilakukan sampai nilai AIC pada beta 0 paling kecil. Pada backward kedua, variabel yang dieliminasi adalah curbweight. Pada backward yang ketiga, variabel yang dieliminasi adalah highwaympg. Pada backward keempat, variabel yang dieliminasi adalah wheelbase. Pada backward yang kelima, variabel yang dieliminasi adalah carlength. Sehingga dilakukan lima kali backward elimination untuk mendapatkan model terbaik.
+
+### Pemodelan Data Setelah Reduksi Dimensi
+
+```{r}
+model2 <- lm(price ~ carwidth + carheight + enginesize + stroke + compressionratio + horsepower + peakrpm + citympg)
+summary(model2)
+```
+
+Untuk analisis data setelah reduksi masih menggunakan metode yang sama, yaitu regresi linear berganda.
+
+Hasil yang diperoleh dari meregresikan variabel respon (price) dengan variabel prediktor yang tersisa (model2) dapat dikatakan lebih akurat karena hanya menggunakan variabel prediktor yang signifikan, dan telah menghindari multikolinearitas.
+
+Setelah reduksi, diperoleh skor Kebaikan Model (R²) = 0.8466 atau 84,66%.
+
+Angka kebaikan model yang diperoleh kali ini turun jika dibandingkan dengan model pertama. Namun, penurunan yang terjadi sangatlah sedikit, yaitu 0,42%. Penurunan yang sangat sedikit ini dikarenakan variabel prediktor yang dikeluarkan sebelumnya sebagian besar telah diwakili oleh variabel prediktor yang tetap digunakan, sehingga keluarnya variabel prediktor tersebut tidak terlalu mempengaruhi hasil analisis regresi.
+
+Pada regresi ini, diperoleh nilai estimasi dari koefisien sebagai berikut :
+
+|           |                |
+|-----------|----------------|
+| Koefisien | Nilai Estimasi |
+| B0        | -54834.5       |
+| B1        | 555.963        |
+| B2        | 162.764        |
+| B3        | 119.754        |
+| B4        | -2746.174      |
+| B5        | 310.566        |
+| B6        | 33.509         |
+| B7        | 2.426          |
+| B8        | -103.363       |
+
+Sehingga persamaan regresi, sebagai berikut :
+
+Y = -54834.5 + 555.963 X1 + 162.764 X2 + 119.754 X3 - 2746.174 X4 + 310.566 X5 + 33.509 X6 + 2.426 X7 - 103.363 X8
+
+dengan :
+
+Y = price_pred
+
+X1 = carwidth
+
+X2 = carheight
+
+X3 = enginesize
+
+X4 = stroke
+
+X5 = compressionratio
+
+X6 = horsepower
+
+X7 = peakrpm
+
+X8 = citympg
+
+### Korelasi
+
+```{r}
+data = data[c("carwidth", "carheight", "enginesize", "stroke", "compressionratio", "horsepower", "peakrpm", "citympg", "price")]
+cor(data)
+```
+
+Nilai korelasi antar variabel dalam data kami dapat dilihat pada hasil di atas. Jika terdapat nilai korelasi antar variabel bebas yang sangat tinggi, baik itu korelasi positif mendekati 1 atau korelasi negatif mendekati -1 maka akan memungkinkan terjadinya multikolinearitas antar variabel bebas. Multikolinearitas merupakan suatu kondisi ketika satu variabel bebas memiliki keterkaitan atau ketergantungan dengan variabel bebas yang lain, sehingga sebenarnya variabel bebas tersebut sudah diwakilkan oleh variabel bebas lain. Korelasi antara variabel wheelbase dengan variabel carlength merupakan salah satu korelasi positif yang memiliki kemungkinan untuk terjadi multikolinearitas. Hal ini karena nilai korelasi antar variabel tersebut cukup tinggi yaitu 0.87 dan mendekati angka 1. Contoh lainnya yaitu antara variabel citympg dengan horsepower. Nilai korelasi dari kedua variabel tersebut cukup tinggi yaitu -0.8 atau mendekati -1, sehingga memungkinkan terjadinya multikolinearitas.
+
+Akan tetapi, jika nilai korelasi tinggi ini merupakan nilai korelasi antara variabel bebas (X) dan variabel terikat (Y) justru menjadi sesuatu yang baik. Hal ini karena menunjukkan adanya keterkaitan antara dua varibel tersebut, sehingga dapat disimpulkan bahwa hasil dari variabel Y dipengaruhi oleh variabel X. Contohnya yaitu korelasi positif antara variabel enginesize dengan variabel price yang memiliki nilai 0.87. Hal ini menunjukkan bahwa nilai yang terdapat dalam variabel price dipengaruhi oleh variabel enginesize. Selain itu terdapat pula korelasi negatif yang cukup tinggi antara variabel highwaympg dengan variabel price, dimana nilai korelasi nya adalah -0.69. Hal tersebut menunjukkan bahwa ketika nilai variabel highwaympg menurun, maka nilai variabel price akan meningkat sebagai akibat dari penurunan nilai variabel highwaympg.
+
+### Correlation Pairplot
+
+```{r}
+pairs(~price+carwidth + carheight + enginesize + stroke + compressionratio +horsepower+peakrpm+citympg)
+```
+
+Gambar di atas merupakan beberapa scatterplot yang menggambarkan hubungan antar variabel. Baik antara variabel respon dengan variabel prediktor, maupun antar variabel prediktor.
+
+Dalam membaca scatterplot, variabel yang menjadi variabel pada sisi vertikal sesuai dengan variabel yang berada pada baris scatterplot berada. Sedangkan variabel horizontal, sesuai dengan variabel yang berada pada kolom letak scatterplot berada. Contohnya, pada scatterplot di kolom pertama, variabel price menjadi variabel horizontal (x). Sedangkan pada scatterplot di kolom kedua, variabel carwidth menjadi variabel di sisi horizontal. Sebaliknya, pada scatterplot di baris pertama, variabel price menjadi variabel pada sisi vertikal, dan pada scatterplot di baris kedua, variabel carwidth menjadi variabel yang berada di sisi vertikal.
+
+Ketika pola pada scatterplot cenderung naik, artinya terdapat hubungan positif antar variabel tersebut. Sebaliknya ketika pola cenderung turun, artinya terdapat hubungan negatif antar variabel tersebut. Ketika tidak terdapat pola yang jelas, maka antar variabel tersebut tidak memiliki hubungan yang linear.
